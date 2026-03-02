@@ -1,25 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Service;
 
-/**
- *
- * @author ASUS
- */
 import controller.UsersJpaController;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.util.List;
 import model.Users;
 
-public class UsersService {
+public class UsersService extends BaseService {
+
     private UsersJpaController controller;
 
     public UsersService() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EnergyPU");
-        controller = new UsersJpaController(emf);
+        controller = new UsersJpaController(getEntityManagerFactory());
     }
 
     public void createUser(Users user) throws Exception {
