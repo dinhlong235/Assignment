@@ -18,33 +18,36 @@ public class RegisterServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        try {
+    try {
 
-            String fullname = request.getParameter("fullname");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
+        String fullname = request.getParameter("fullname");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-            Users user = new Users();
-            user.setName(fullname);
-            user.setEmail(email);
-            user.setPasswordHash(password);
+        Users user = new Users();
+        user.setName(fullname);
+        user.setEmail(email);
+        user.setPasswordHash(password);
 
-            service.createUser(user);
+        // 👇 THÊM Ở ĐÂY
+        user.setUserType("USER");
+        user.setCreatedAt(new java.util.Date());
 
-            System.out.println("REGISTER SUCCESS");
+        service.createUser(user);
 
-            // redirect tới login page
-            response.sendRedirect(request.getContextPath() + "/web/login.jsp");
+        System.out.println("REGISTER SUCCESS");
 
-        } catch (Exception e) {
+        response.sendRedirect(request.getContextPath() + "/web/login.jsp");
 
-            e.printStackTrace();
+    } catch (Exception e) {
 
-            response.sendRedirect(request.getContextPath() + "/web/register.jsp");
+        e.printStackTrace();
+        response.setContentType("text/plain");
+        e.printStackTrace(response.getWriter());
 
-        }
     }
+}
 }
