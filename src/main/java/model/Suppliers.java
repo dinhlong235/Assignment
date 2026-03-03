@@ -18,6 +18,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,7 +52,7 @@ public class Suppliers implements Serializable {
     @Column(name = "contact_info")
     private String contactInfo;
     @OneToMany(mappedBy = "supplierId")
-    private Collection<ServicePackages> servicePackagesCollection;
+    private Collection<ServicePackages> servicePackagesCollection = new ArrayList<>();
 
     public Suppliers() {
     }

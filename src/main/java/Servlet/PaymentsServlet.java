@@ -106,7 +106,7 @@ public class PaymentsServlet extends HttpServlet {
         request.setAttribute("listPayments", list);
 
         RequestDispatcher dispatcher =
-                request.getRequestDispatcher("payments/paymentList.jsp");
+                request.getRequestDispatcher("/web/payments/paymentList.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -119,7 +119,7 @@ public class PaymentsServlet extends HttpServlet {
         request.setAttribute("ordersList", ordersService.getAllOrders());
 
         RequestDispatcher dispatcher =
-                request.getRequestDispatcher("payments/createPayment.jsp");
+                request.getRequestDispatcher("/web/payments/createPayment.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -137,7 +137,7 @@ public class PaymentsServlet extends HttpServlet {
         request.setAttribute("ordersList", ordersService.getAllOrders());
 
         RequestDispatcher dispatcher =
-                request.getRequestDispatcher("payments/editPayment.jsp");
+                request.getRequestDispatcher("/web/payments/editPayment.jsp");
 
         dispatcher.forward(request, response);
     }

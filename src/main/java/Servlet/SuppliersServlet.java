@@ -35,7 +35,9 @@ public class SuppliersServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        if (action == null) action = "";
+        if (action == null) {
+            action = "";
+        }
 
         try {
 
@@ -94,8 +96,8 @@ public class SuppliersServlet extends HttpServlet {
 
         request.setAttribute("listSuppliers", list);
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("suppliers/supplierList.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/suppliers/supplierList.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -104,8 +106,8 @@ public class SuppliersServlet extends HttpServlet {
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("suppliers/createSupplier.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/suppliers/createSupplier.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -120,8 +122,8 @@ public class SuppliersServlet extends HttpServlet {
 
         request.setAttribute("supplier", supplier);
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("suppliers/editSupplier.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/suppliers/editSupplier.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -146,30 +148,46 @@ public class SuppliersServlet extends HttpServlet {
     }
 
     // UPDATE
-    private void updateSupplier(HttpServletRequest request, HttpServletResponse response)
+    private void updateSupplier(HttpServletRequest request,
+            HttpServletResponse response)
             throws Exception {
 
-        int id = Integer.parseInt(request.getParameter("supplierId"));
+        int id = Integer.parseInt(request.getParameter("id"));
 
+        // 🔥 LOAD entity từ DB trước
         Suppliers supplier = suppliersService.getSupplier(id);
 
+        if (supplier == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        // 🔥 Chỉ sửa field cần sửa
         supplier.setName(request.getParameter("name"));
         supplier.setType(request.getParameter("type"));
         supplier.setContactInfo(request.getParameter("contactInfo"));
 
+        // 🔥 Gửi object đã có full collection vào edit()
         suppliersService.updateSupplier(supplier);
 
-        response.sendRedirect("suppliers");
+        response.sendRedirect(request.getContextPath() + "/suppliers");
     }
 
     // DELETE
     private void deleteSupplier(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        int id = Integer.parseInt(request.getParameter("supplierId"));
+        String idParam = request.getParameter("id");
+
+        if (idParam == null || idParam.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
 
         suppliersService.deleteSupplier(id);
 
-        response.sendRedirect("suppliers");
+        response.sendRedirect(request.getContextPath() + "/suppliers");
     }
 }

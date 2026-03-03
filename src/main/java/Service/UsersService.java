@@ -31,4 +31,17 @@ public class UsersService extends BaseService {
     public List<Users> getAllUsers() {
         return controller.findUsersEntities();
     }
+    public Users login(String username, String password) {
+
+    for(Users u : controller.findUsersEntities()) {
+
+        if(u.getName().equals(username)
+        && u.getPasswordHash().equals(password)) {
+
+            return u;
+        }
+    }
+
+    return null;
+}
 }

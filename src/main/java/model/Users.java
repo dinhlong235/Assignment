@@ -20,6 +20,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -63,13 +64,13 @@ public class Users implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
     @OneToMany(mappedBy = "userId")
-    private Collection<Consumption> consumptionCollection;
+    private Collection<Consumption> consumptionCollection = new ArrayList<>();
     @OneToMany(mappedBy = "userId")
-    private Collection<Orders> ordersCollection;
+    private Collection<Orders> ordersCollection = new ArrayList<>();
     @OneToMany(mappedBy = "userId")
-    private Collection<Forecast> forecastCollection;
+    private Collection<Forecast> forecastCollection = new ArrayList<>();
     @OneToMany(mappedBy = "userId")
-    private Collection<Payments> paymentsCollection;
+    private Collection<Payments> paymentsCollection= new ArrayList<>();
 
     public Users() {
     }

@@ -65,49 +65,34 @@ public class SuppliersJpaController implements Serializable {
         }
     }
 
-    public void edit(Suppliers suppliers) throws NonexistentEntityException, Exception {
+    public void edit(Suppliers suppliers)
+            throws NonexistentEntityException, Exception {
+
         EntityManager em = null;
+
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Suppliers persistentSuppliers = em.find(Suppliers.class, suppliers.getSupplierId());
-            Collection<ServicePackages> servicePackagesCollectionOld = persistentSuppliers.getServicePackagesCollection();
-            Collection<ServicePackages> servicePackagesCollectionNew = suppliers.getServicePackagesCollection();
-            Collection<ServicePackages> attachedServicePackagesCollectionNew = new ArrayList<ServicePackages>();
-            for (ServicePackages servicePackagesCollectionNewServicePackagesToAttach : servicePackagesCollectionNew) {
-                servicePackagesCollectionNewServicePackagesToAttach = em.getReference(servicePackagesCollectionNewServicePackagesToAttach.getClass(), servicePackagesCollectionNewServicePackagesToAttach.getPackageId());
-                attachedServicePackagesCollectionNew.add(servicePackagesCollectionNewServicePackagesToAttach);
-            }
-            servicePackagesCollectionNew = attachedServicePackagesCollectionNew;
-            suppliers.setServicePackagesCollection(servicePackagesCollectionNew);
-            suppliers = em.merge(suppliers);
-            for (ServicePackages servicePackagesCollectionOldServicePackages : servicePackagesCollectionOld) {
-                if (!servicePackagesCollectionNew.contains(servicePackagesCollectionOldServicePackages)) {
-                    servicePackagesCollectionOldServicePackages.setSupplierId(null);
-                    servicePackagesCollectionOldServicePackages = em.merge(servicePackagesCollectionOldServicePackages);
-                }
-            }
-            for (ServicePackages servicePackagesCollectionNewServicePackages : servicePackagesCollectionNew) {
-                if (!servicePackagesCollectionOld.contains(servicePackagesCollectionNewServicePackages)) {
-                    Suppliers oldSupplierIdOfServicePackagesCollectionNewServicePackages = servicePackagesCollectionNewServicePackages.getSupplierId();
-                    servicePackagesCollectionNewServicePackages.setSupplierId(suppliers);
-                    servicePackagesCollectionNewServicePackages = em.merge(servicePackagesCollectionNewServicePackages);
-                    if (oldSupplierIdOfServicePackagesCollectionNewServicePackages != null && !oldSupplierIdOfServicePackagesCollectionNewServicePackages.equals(suppliers)) {
-                        oldSupplierIdOfServicePackagesCollectionNewServicePackages.getServicePackagesCollection().remove(servicePackagesCollectionNewServicePackages);
-                        oldSupplierIdOfServicePackagesCollectionNewServicePackages = em.merge(oldSupplierIdOfServicePackagesCollectionNewServicePackages);
-                    }
-                }
-            }
+
+            em.merge(suppliers);
+
             em.getTransaction().commit();
+
         } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                Integer id = suppliers.getSupplierId();
-                if (findSuppliers(id) == null) {
-                    throw new NonexistentEntityException("The suppliers with id " + id + " no longer exists.");
-                }
+
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
+
+            Integer id = suppliers.getSupplierId();
+            if (findSuppliers(id) == null) {
+                throw new NonexistentEntityException(
+                        "The suppliers with id " + id + " no longer exists."
+                );
+            }
+
             throw ex;
+
         } finally {
             if (em != null) {
                 em.close();
@@ -186,5 +171,5 @@ public class SuppliersJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
