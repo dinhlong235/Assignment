@@ -1,0 +1,110 @@
+/*
+    Login CSS - Cấu trúc layout cho trang đăng nhập/đăng ký
+*/
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-box {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Chừa không gian lớn ở dưới cùng (140px) để hiển thị họa tiết lượn sóng */
+    padding: 40px 40px 140px 40px; 
+    position: relative;
+    overflow: hidden; /* Giữ họa tiết không bị tràn ra ngoài góc bo */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Họa tiết lượn sóng xanh ở dưới đáy form */
+.login-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 140px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%232d8b4e' fill-opacity='1' d='M0,224L48,213.3C96,203,192,181,288,186.7C384,192,480,224,576,234.7C672,245,768,235,864,202.7C960,171,1056,117,1152,112C1248,107,1344,149,1392,170.7L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3Cpath fill='%236cc388' fill-opacity='0.6' d='M0,160L48,176C96,192,192,224,288,218.7C384,213,480,171,576,149.3C672,128,768,128,864,149.3C960,171,1056,213,1152,218.7C1248,224,1344,192,1392,176L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: bottom;
+    z-index: 0;
+}
+
+/* Đảm bảo toàn bộ nội dung form nổi lên trên họa tiết sóng */
+.login-box > * {
+    position: relative;
+    z-index: 1; 
+}
+
+/* Tiêu đề và Logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.logo-text {
+    color: #2d8b4e;
+    font-size: 24px;
+    font-weight: 700;
+    margin-left: 10px;
+}
+
+.box-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* Footer form (Chứa Quên mật khẩu & Đăng ký) */
+.form-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.forgot-pw {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 400;
+}
+
+.login-signup {
+    font-size: 0.9rem;
+    color: #475569;
+}
+.remember-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa ô checkbox và chữ */
+    margin-bottom: 15px;
+    margin-top: -5px;
+}
+
+.remember-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #2b8b4a; /* Đổi màu dấu tick thành xanh lá */
+}
+
+.remember-container label {
+    font-size: 0.9rem;
+    color: #475569;
+    cursor: pointer;
+    user-select: none; /* Tránh bôi đen chữ khi click đúp */
+}

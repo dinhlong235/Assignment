@@ -27,7 +27,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
 
-            if("ADMIN".equals(user.getUserType())){
+            if("admin".equals(user.getUserType())){
 
                 response.sendRedirect(request.getContextPath() + "/web/admin.jsp");
 

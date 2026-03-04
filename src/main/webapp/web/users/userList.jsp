@@ -61,7 +61,7 @@ Delete
 
 <br>
 
-<a href="admin.jsp">Back to Admin</a>
+<a href="${pageContext.request.contextPath}/web/admin.jsp">Back to Admin</a>
 
 </body>
 </html>
