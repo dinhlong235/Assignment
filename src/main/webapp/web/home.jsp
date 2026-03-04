@@ -65,13 +65,13 @@
         <%@page import="model.Users"%>
 <%
     // Lấy đối tượng user từ session
-    Users user = (Users) session.getAttribute("userSession");
+    Users user = (Users) session.getAttribute("user");
     String displayName = (user != null) ? user.getName() : "Khách";
 %>
         <header class="header">
             <h2>Dashboard</h2>
             <div style="display: flex; align-items: center; gap: 10px;">
-                <span>Xin chào, <strong>Dan</strong></span>
+                <span>Xin chào, <strong><%= user != null ? user.getName() : "Khách" %></strong></span>
                 <img src="https://ui-avatars.com/api/?name=Dan&background=1a5d36&color=fff" style="width: 35px; border-radius: 50%;">
             </div>
         </header>

@@ -46,7 +46,9 @@ public class PaymentsServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        if (action == null) action = "";
+        if (action == null) {
+            action = "";
+        }
 
         try {
 
@@ -64,7 +66,19 @@ public class PaymentsServlet extends HttpServlet {
                     deletePayment(request, response);
                     break;
 
+                case "checkout":
+                    showCheckoutPage(request, response);
+                    break;
+
                 default:
+                    HttpSession session = request.getSession();
+                    Users user = (Users) session.getAttribute("user");
+
+                    if (user == null || !"admin".equals(user.getUserType())) {
+                        response.sendRedirect("account");
+                        return;
+                    }
+
                     listPayments(request, response);
                     break;
             }
@@ -90,6 +104,8 @@ public class PaymentsServlet extends HttpServlet {
             } else if ("edit".equals(action)) {
 
                 updatePayment(request, response);
+            } else if ("pay".equals(action)) {
+                payOrder(request, response);
             }
 
         } catch (Exception e) {
@@ -105,8 +121,8 @@ public class PaymentsServlet extends HttpServlet {
 
         request.setAttribute("listPayments", list);
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/payments/paymentList.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/payments/paymentList.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -118,8 +134,8 @@ public class PaymentsServlet extends HttpServlet {
         request.setAttribute("usersList", usersService.getAllUsers());
         request.setAttribute("ordersList", ordersService.getAllOrders());
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/payments/createPayment.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/payments/createPayment.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -136,8 +152,8 @@ public class PaymentsServlet extends HttpServlet {
         request.setAttribute("usersList", usersService.getAllUsers());
         request.setAttribute("ordersList", ordersService.getAllOrders());
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/payments/editPayment.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/payments/editPayment.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -146,23 +162,23 @@ public class PaymentsServlet extends HttpServlet {
     private void insertPayment(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        BigDecimal amount =
-                new BigDecimal(request.getParameter("amount"));
+        BigDecimal amount
+                = new BigDecimal(request.getParameter("amount"));
 
-        String status =
-                request.getParameter("status");
+        String status
+                = request.getParameter("status");
 
-        int userId =
-                Integer.parseInt(request.getParameter("userId"));
+        int userId
+                = Integer.parseInt(request.getParameter("userId"));
 
-        int orderId =
-                Integer.parseInt(request.getParameter("orderId"));
+        int orderId
+                = Integer.parseInt(request.getParameter("orderId"));
 
-        Users user =
-                usersService.getUser(userId);
+        Users user
+                = usersService.getUser(userId);
 
-        Orders order =
-                ordersService.getOrder(orderId);
+        Orders order
+                = ordersService.getOrder(orderId);
 
         Payments payment = new Payments();
 
@@ -181,29 +197,29 @@ public class PaymentsServlet extends HttpServlet {
     private void updatePayment(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        int paymentId =
-                Integer.parseInt(request.getParameter("paymentId"));
+        int paymentId
+                = Integer.parseInt(request.getParameter("paymentId"));
 
-        BigDecimal amount =
-                new BigDecimal(request.getParameter("amount"));
+        BigDecimal amount
+                = new BigDecimal(request.getParameter("amount"));
 
-        String status =
-                request.getParameter("status");
+        String status
+                = request.getParameter("status");
 
-        int userId =
-                Integer.parseInt(request.getParameter("userId"));
+        int userId
+                = Integer.parseInt(request.getParameter("userId"));
 
-        int orderId =
-                Integer.parseInt(request.getParameter("orderId"));
+        int orderId
+                = Integer.parseInt(request.getParameter("orderId"));
 
-        Users user =
-                usersService.getUser(userId);
+        Users user
+                = usersService.getUser(userId);
 
-        Orders order =
-                ordersService.getOrder(orderId);
+        Orders order
+                = ordersService.getOrder(orderId);
 
-        Payments payment =
-                paymentsService.getPayment(paymentId);
+        Payments payment
+                = paymentsService.getPayment(paymentId);
 
         payment.setAmount(amount);
         payment.setStatus(status);
@@ -219,11 +235,67 @@ public class PaymentsServlet extends HttpServlet {
     private void deletePayment(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        int id =
-                Integer.parseInt(request.getParameter("paymentId"));
+        int id
+                = Integer.parseInt(request.getParameter("paymentId"));
 
         paymentsService.deletePayment(id);
 
         response.sendRedirect("payments");
+    }
+
+    //PAY
+    private void payOrder(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+
+        Orders order = ordersService.getOrder(orderId);
+
+        // 🔐 CHECK ORDER THUỘC USER
+        if (order == null || order.getUserId().getUserId().equals(user.getUserId())) {
+            response.sendRedirect("account");
+            return;
+        }
+
+        paymentsService.payOrder(orderId);
+
+        response.sendRedirect("account");
+    }
+
+    //CHECKOUT
+    private void showCheckoutPage(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        HttpSession session = request.getSession();
+        Users user = (Users) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
+
+        Orders order = ordersService.getOrder(orderId);
+
+        // 🔐 BẢO MẬT – tránh thanh toán order người khác
+        if (order == null
+                || !order.getUserId().getUserId().equals(user.getUserId())) {
+            response.sendRedirect("account");
+            return;
+        }
+
+        request.setAttribute("order", order);
+
+        request.getRequestDispatcher("/web/payments/checkout.jsp")
+                .forward(request, response);
     }
 }

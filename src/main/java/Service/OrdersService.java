@@ -1,6 +1,7 @@
 package Service;
 
 import controller.OrdersJpaController;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import model.Orders;
 
@@ -30,5 +31,55 @@ public class OrdersService extends BaseService {
 
     public List<Orders> getAllOrders() {
         return controller.findOrdersEntities();
+    }
+
+    public Orders findPendingOrderByUser(int userId) {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT o FROM Orders o WHERE o.userId.userId = :uid AND o.status = :status",
+                    Orders.class
+            )
+                    .setParameter("uid", userId)
+                    .setParameter("status", "pending")
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    public Orders findActiveOrderByUser(int userId) {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT o FROM Orders o WHERE o.userId.userId = :uid AND o.status = :status",
+                    Orders.class
+            )
+                    .setParameter("uid", userId)
+                    .setParameter("status", "active")
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    public Orders findAnyOrderByUser(int userId) {
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT o FROM Orders o WHERE o.userId.userId = :uid",
+                    Orders.class
+            )
+                    .setParameter("uid", userId)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
     }
 }
