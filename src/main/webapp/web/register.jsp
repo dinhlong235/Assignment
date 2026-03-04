@@ -8,7 +8,7 @@
 
 <h2>Register</h2>
 
-<form action="/Energy_backend/register" method="post">
+<form action="${pageContext.request.contextPath}/register" method="post">
 
     Fullname:
     <input type="text" name="fullname" required>

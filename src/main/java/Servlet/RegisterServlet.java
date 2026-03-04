@@ -33,9 +33,7 @@ public class RegisterServlet extends HttpServlet {
             user.setPasswordHash(password);
 
             service.createUser(user);
-
             System.out.println("REGISTER SUCCESS");
-
             // redirect tới login page
             response.sendRedirect(request.getContextPath() + "/web/login.jsp");
 
