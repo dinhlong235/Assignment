@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import model.ServicePackages;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 /**
  *
@@ -215,5 +217,27 @@ public class ServicePackagesJpaController implements Serializable {
             em.close();
         }
     }
-    
+    /**
+     * Hàm tìm gói cước theo bộ lọc
+     * @param supplierType: Loại năng lượng (ví dụ: "solar", "wind", "EVN")
+     * @param usageType: Loại khách hàng (ví dụ: "household", "business")
+     * @return Danh sách các gói cước phù hợp
+     */
+    public List<ServicePackages> findPackagesByFilter(String supplierType, String usageType) {
+        EntityManager em = getEntityManager();
+        try {
+            // Viết câu Query: Chọn gói cước P mà có Supplier là loại A và PackageType là loại B
+            String jpql = "SELECT p FROM ServicePackages p "
+                        + "WHERE p.supplierId.type = :sType " 
+                        + "AND p.packageType = :uType";
+            
+            TypedQuery<ServicePackages> q = em.createQuery(jpql, ServicePackages.class);
+            q.setParameter("sType", supplierType);
+            q.setParameter("uType", usageType);
+            
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
