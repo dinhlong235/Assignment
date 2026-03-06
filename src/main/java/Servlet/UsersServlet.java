@@ -29,7 +29,9 @@ public class UsersServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        if (action == null) action = "";
+        if (action == null) {
+            action = "";
+        }
 
         try {
             switch (action) {
@@ -99,8 +101,8 @@ public class UsersServlet extends HttpServlet {
 
         request.setAttribute("listUsers", list);
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/users/userList.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/users/userList.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -111,8 +113,8 @@ public class UsersServlet extends HttpServlet {
     private void showCreateForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/users/createUser.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/users/createUser.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -129,8 +131,8 @@ public class UsersServlet extends HttpServlet {
 
         request.setAttribute("user", user);
 
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher("/web/users/editUser.jsp");
+        RequestDispatcher dispatcher
+                = request.getRequestDispatcher("/web/users/editUser.jsp");
 
         dispatcher.forward(request, response);
     }
@@ -158,21 +160,21 @@ public class UsersServlet extends HttpServlet {
     // UPDATE
     // =========================
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
-        throws Exception {
+            throws Exception {
 
-    int id = Integer.parseInt(request.getParameter("id"));
+        int id = Integer.parseInt(request.getParameter("id"));
 
-    Users user = new Users();
-    user.setUserId(id);
-    user.setName(request.getParameter("username"));
-    user.setEmail(request.getParameter("email"));
-    user.setPasswordHash(request.getParameter("password"));
-    user.setUserType(request.getParameter("userType"));
+        Users user = new Users();
+        user.setUserId(id);
+        user.setName(request.getParameter("username"));
+        user.setEmail(request.getParameter("email"));
+        user.setPasswordHash(request.getParameter("password"));
+        user.setUserType(request.getParameter("userType"));
 
-    service.updateUser(user);
+        service.updateUser(user);
 
-    response.sendRedirect(request.getContextPath() + "/users");
-}
+        response.sendRedirect(request.getContextPath() + "/users");
+    }
 
     // =========================
     // DELETE

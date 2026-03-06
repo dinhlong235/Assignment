@@ -8,12 +8,17 @@ import java.io.IOException;
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
+    @Override
     protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
+            HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getSession().invalidate();
+        HttpSession session = request.getSession(false);
 
-        response.sendRedirect("login.jsp");
+        if (session != null) {
+            session.invalidate();
+        }
+
+        response.sendRedirect(request.getContextPath() + "/web/login.jsp");
     }
 }

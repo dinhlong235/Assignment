@@ -1,6 +1,7 @@
 package Service;
 
 import controller.UsersJpaController;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import model.Users;
 
@@ -31,17 +32,36 @@ public class UsersService extends BaseService {
     public List<Users> getAllUsers() {
         return controller.findUsersEntities();
     }
+
     public Users login(String username, String password) {
 
-    for(Users u : controller.findUsersEntities()) {
+        for (Users u : controller.findUsersEntities()) {
 
-        if(u.getName().equals(username)
-        && u.getPasswordHash().equals(password)) {
+            if (u.getName().equals(username)
+                    && u.getPasswordHash().equals(password)) {
 
-            return u;
+                return u;
+            }
         }
+
+        return null;
     }
 
-    return null;
-}
+    public List<Users> getRecentUsers(int limit) {
+
+        EntityManager em = getEntityManagerFactory().createEntityManager();
+
+        try {
+
+            return em.createQuery(
+                    "SELECT u FROM Users u ORDER BY u.userId DESC",
+                    Users.class
+            )
+                    .setMaxResults(limit)
+                    .getResultList();
+
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -244,58 +244,67 @@ public class PaymentsServlet extends HttpServlet {
     }
 
     //PAY
-    private void payOrder(HttpServletRequest request, HttpServletResponse response)
+    private void payOrder(HttpServletRequest request,
+            HttpServletResponse response)
             throws Exception {
 
-        HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
 
-        if (user == null) {
-            response.sendRedirect("login.jsp");
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
+        Users user = (Users) session.getAttribute("user");
 
         int orderId = Integer.parseInt(request.getParameter("orderId"));
 
         Orders order = ordersService.getOrder(orderId);
 
-        // 🔐 CHECK ORDER THUỘC USER
-        if (order == null || order.getUserId().getUserId().equals(user.getUserId())) {
-            response.sendRedirect("account");
+        // 🔐 BẢO MẬT ĐÚNG
+        if (order == null
+                || !order.getUserId().getUserId().equals(user.getUserId())) {
+
+            response.sendRedirect(request.getContextPath() + "/account");
             return;
         }
 
+        // Service phải:
+        // 1. Update order -> active
+        // 2. Tạo payment -> success
         paymentsService.payOrder(orderId);
 
-        response.sendRedirect("account");
+        response.sendRedirect(request.getContextPath() + "/account");
     }
 
     //CHECKOUT
-    private void showCheckoutPage(HttpServletRequest request, HttpServletResponse response)
+    private void showCheckoutPage(HttpServletRequest request,
+            HttpServletResponse response)
             throws Exception {
 
-        HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
 
-        if (user == null) {
-            response.sendRedirect("login.jsp");
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
+        Users user = (Users) session.getAttribute("user");
 
         int orderId = Integer.parseInt(request.getParameter("orderId"));
 
         Orders order = ordersService.getOrder(orderId);
 
-        // 🔐 BẢO MẬT – tránh thanh toán order người khác
         if (order == null
                 || !order.getUserId().getUserId().equals(user.getUserId())) {
-            response.sendRedirect("account");
+
+            response.sendRedirect(request.getContextPath() + "/account");
             return;
         }
 
         request.setAttribute("order", order);
 
-        request.getRequestDispatcher("/web/payments/checkout.jsp")
+        request.getRequestDispatcher("/web/checkout.jsp")
                 .forward(request, response);
     }
 }

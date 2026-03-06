@@ -50,7 +50,7 @@ public class PaymentsService extends BaseService {
                 throw new Exception("Order not found");
             }
 
-            if (order == null || !"pending".equals(order.getStatus())) {
+            if (!"pending".equalsIgnoreCase(order.getStatus())) {
                 throw new Exception("Order not valid for payment");
             }
 
@@ -71,7 +71,9 @@ public class PaymentsService extends BaseService {
             tx.commit();
 
         } catch (Exception e) {
-            tx.rollback();
+            if (tx.isActive()) {
+                tx.rollback();
+            }
             throw e;
         } finally {
             em.close();

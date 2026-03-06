@@ -1,0 +1,165 @@
+/*
+    Global CSS - Định dạng chung cho toàn hệ thống
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #eaeff3; /* Màu xám nhạt của nền trang */
+}
+
+/*===== Typography & Colors =====*/
+.error-text {
+    color: #e70408;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/*===== Inputs =====*/
+.input-group {
+    width: 100%;
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: #2d8b4e;
+    box-shadow: 0 0 0 2px rgba(45, 139, 78, 0.1);
+}
+
+/* Icon ẩn hiện mật khẩu */
+.toggle-password {
+    position: absolute;
+    right: 1rem; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    cursor: pointer;
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/*===== Submit Button =====*/
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #2b8b4a; /* Xanh lá */
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+    background-color: #1e6b38;
+}
+
+.submit-btn:active {
+    transform: scale(0.98);
+}
+
+/*===== Links =====*/
+a {
+    color: #2d8b4e;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #1e6b38;
+    text-decoration: underline;
+}
+/* Bố cục chính Dashboard */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f7f6;
+}
+
+/* Sidebar bên trái */
+.sidebar {
+    width: 260px;
+    background-color: #2d8b4e;
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-menu {
+    margin-top: 40px;
+    list-style: none;
+}
+
+.nav-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-item.active, .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Nội dung bên phải */
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Thẻ chỉ số KPI */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.kpi-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2d8b4e;
+    margin: 10px 0;
+}

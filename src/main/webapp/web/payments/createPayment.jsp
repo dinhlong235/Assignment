@@ -1,74 +1,74 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Create Payment</title>
-</head>
-<body>
+    <head>
+        <title>Create Payment</title>
+    </head>
+    <body>
 
-<h2>Create Payment</h2>
+        <h2>Create Payment</h2>
 
-<form action="../payments" method="post">
+        <form action="../payments" method="post">
 
-<input type="hidden" name="action" value="create">
+            <input type="hidden" name="action" value="create">
 
-Amount:
+            Amount:
 
-<input type="number"
-       step="0.01"
-       name="amount"
-       required>
+            <input type="number"
+                   step="0.01"
+                   name="amount"
+                   required>
 
-<br><br>
+            <br><br>
 
-Payment Date:
+            Payment Date:
 
-<input type="datetime-local"
-       name="paymentDate"
-       required>
+            <input type="datetime-local"
+                   name="paymentDate"
+                   required>
 
-<br><br>
+            <br><br>
 
-Status:
+            Status:
 
-<select name="status">
+            <select name="status">
 
-<option value="PENDING">PENDING</option>
+                <option value="PENDING">PENDING</option>
 
-<option value="PAID">PAID</option>
+                <option value="PAID">PAID</option>
 
-<option value="FAILED">FAILED</option>
+                <option value="FAILED">FAILED</option>
 
-</select>
+            </select>
 
-<br><br>
+            <br><br>
 
-User ID:
+            User ID:
 
-<input type="number"
-       name="userId"
-       required>
+            <input type="number"
+                   name="userId"
+                   required>
 
-<br><br>
+            <br><br>
 
-Order ID:
+            Order ID:
 
-<input type="number"
-       name="orderId"
-       required>
+            <input type="number"
+                   name="orderId"
+                   required>
 
-<br><br>
+            <br><br>
 
-<button type="submit">
-Create Payment
-</button>
+            <button type="submit">
+                Create Payment
+            </button>
 
-</form>
+        </form>
 
-<br>
+        <br>
 
-<a href="../payments">
-Back
-</a>
+        <a href="../payments">
+            Back
+        </a>
 
-</body>
+    </body>
 </html>

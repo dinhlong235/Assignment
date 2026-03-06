@@ -1,12 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,6 +32,8 @@ import java.util.Collection;
     @NamedQuery(name = "ServicePackages.findByPackageId", query = "SELECT s FROM ServicePackages s WHERE s.packageId = :packageId"),
     @NamedQuery(name = "ServicePackages.findByName", query = "SELECT s FROM ServicePackages s WHERE s.name = :name"),
     @NamedQuery(name = "ServicePackages.findByPrice", query = "SELECT s FROM ServicePackages s WHERE s.price = :price"),
+    // MỚI THÊM: Query tìm theo loại gói (Household/Business)
+    @NamedQuery(name = "ServicePackages.findByPackageType", query = "SELECT s FROM ServicePackages s WHERE s.packageType = :packageType"),
     @NamedQuery(name = "ServicePackages.findByDescription", query = "SELECT s FROM ServicePackages s WHERE s.description = :description")})
 public class ServicePackages implements Serializable {
 
@@ -44,17 +43,28 @@ public class ServicePackages implements Serializable {
     @Basic(optional = false)
     @Column(name = "package_id")
     private Integer packageId;
+
     @Size(max = 100)
     @Column(name = "name")
     private String name;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "price")
     private BigDecimal price;
+
     @Size(max = 2147483647)
     @Column(name = "description")
     private String description;
-    @OneToMany(mappedBy = "packageId")
+
+    // --- MỚI THÊM: Cột package_type ---
+    @Size(max = 20)
+    @Column(name = "package_type")
+    private String packageType;
+    // ----------------------------------
+
+    @OneToMany(mappedBy = "packageId", fetch = FetchType.EAGER)
     private Collection<Orders> ordersCollection;
+
     @JoinColumn(name = "supplier_id", referencedColumnName = "supplier_id")
     @ManyToOne
     private Suppliers supplierId;
@@ -98,6 +108,16 @@ public class ServicePackages implements Serializable {
         this.description = description;
     }
 
+    // --- MỚI THÊM: Getter và Setter cho packageType ---
+    public String getPackageType() {
+        return packageType;
+    }
+
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
+    }
+    // --------------------------------------------------
+
     @XmlTransient
     public Collection<Orders> getOrdersCollection() {
         return ordersCollection;
@@ -139,5 +159,5 @@ public class ServicePackages implements Serializable {
     public String toString() {
         return "model.ServicePackages[ packageId=" + packageId + " ]";
     }
-    
+
 }

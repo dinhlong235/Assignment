@@ -27,16 +27,20 @@ public class AccountServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-        Users user = (Users) session.getAttribute("user");
+        HttpSession session = request.getSession(false);
 
-        if (user == null) {
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect(request.getContextPath() + "/web/login.jsp");
             return;
         }
 
-        Orders pendingOrder = ordersService.findPendingOrderByUser(user.getUserId());
-        Orders activeOrder = ordersService.findActiveOrderByUser(user.getUserId());
+        Users user = (Users) session.getAttribute("user");
+
+        Orders pendingOrder
+                = ordersService.findOrderByUserAndStatus(user.getUserId(), "pending");
+
+        Orders activeOrder
+                = ordersService.findOrderByUserAndStatus(user.getUserId(), "active");
 
         request.setAttribute("pendingOrder", pendingOrder);
         request.setAttribute("activeOrder", activeOrder);

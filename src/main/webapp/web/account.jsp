@@ -1,171 +1,114 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="jakarta.tags.core" %>
-
+<%@taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>Tài khoản của tôi</title>
+        <title>My Account</title>
         <style>
-            .box {
-                border: 1px solid #ddd;
-                padding: 20px;
-                margin: 20px 0;
-                border-radius: 8px;
-                background-color: #f9f9f9;
+            body {
+                font-family: Arial;
+                margin: 40px;
             }
-
-            .success {
-                background-color: #e8f5e9;
-                border-color: #4caf50;
+            .card {
+                border:1px solid #ddd;
+                padding:20px;
+                border-radius:8px;
+                margin-bottom:20px;
             }
-
-            .pending {
-                background-color: #fff8e1;
-                border-color: #ff9800;
-            }
-
-            .empty {
-                background-color: #fce4ec;
-                border-color: #e91e63;
-            }
-
             .btn {
-                padding: 8px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                text-decoration: none;
+                padding:10px 20px;
+                background:#007bff;
+                color:white;
+                border:none;
+                border-radius:5px;
+                cursor:pointer;
             }
-
-            .btn-pay {
-                background-color: #ff9800;
-                color: white;
+            .btn:hover {
+                background:#0056b3;
             }
-
-            .btn-register {
-                background-color: #2196f3;
-                color: white;
+            .success {
+                color:green;
+            }
+            .pending {
+                color:orange;
             }
         </style>
     </head>
     <body>
 
-        <h2>Tài khoản của tôi</h2>
+        <h2>Account Service Status</h2>
 
-        <c:set var="user" value="${sessionScope.user}" />
+        <c:choose>
 
-        <c:if test="${user == null}">
-            <c:redirect url="login.jsp"/>
-        </c:if>
+            <%-- CASE 1: Có active order --%>
+            <c:when test="${activeOrder != null}">
+                <div class="card">
+                    <h3 class="success">Dịch vụ đang hoạt động</h3>
 
-        <p>Xin chào <b>${user.fullName}</b> 
-            (<a href="logout">Đăng xuất</a>)
-        </p>
+                    <p><strong>Tên gói:</strong> 
+                        ${activeOrder.packageId.name}
+                    </p>
 
-        <h3>Gói dịch vụ của bạn:</h3>
+                    <p><strong>Nhà cung cấp:</strong> 
+                        ${activeOrder.packageId.supplierId.name}
+                    </p>
 
-        <!-- ========================= -->
-        <!-- TRƯỜNG HỢP 1: KHÔNG CÓ ORDER -->
-        <!-- ========================= -->
-        <c:if test="${pendingOrder == null && activeOrder == null}">
-            <div class="box empty">
-                Bạn chưa đăng kí gói dịch vụ nào.<br><br>
-                Nhanh tay đăng ký gói dịch vụ của chúng tôi để nhận được dịch vụ tận tình và nhanh chóng nhất.
-                <br><br>
-                <a href="service-packages" class="btn btn-register">Đăng ký ngay</a>
-            </div>
-        </c:if>
+                    <p><strong>Giá gói:</strong> 
+                        ${activeOrder.packageId.price} VND
+                    </p>
 
+                    <p><strong>Ngày đăng ký:</strong> 
+                        ${activeOrder.orderDate}
+                    </p>
 
-        <!-- ========================= -->
-        <!-- TRƯỜNG HỢP 2: CÓ ORDER PENDING -->
-        <!-- ========================= -->
-        <c:if test="${pendingOrder != null && activeOrder == null}">
-            <div class="box pending">
-                Bạn đã đăng kí gói dịch vụ 
-                <b>${pendingOrder.packageId.packageName}</b><br><br>
+                    <p><strong>Trạng thái:</strong> 
+                        ${activeOrder.status}
+                    </p>
+                </div>
+                <a href="${pageContext.request.contextPath}/home">
+                    <button>Về trang chủ</button>
+                </a>
+            </c:when>
 
-                Trạng thái: <b>Chưa thanh toán</b><br>
-                Số tiền cần thanh toán: 
-                <b>${pendingOrder.packageId.price}</b> VND
-                <br><br>
+            <%-- CASE 2: Có pending order --%>
+            <c:when test="${pendingOrder != null}">
+                <div class="card">
+                    <h3 class="pending">Dịch vụ đang chờ thanh toán</h3>
 
-                <form action="payments" method="get">
-                    <input type="hidden" name="action" value="checkout"/>
-                    <input type="hidden" name="orderId" value="${pendingOrder.orderId}"/>
-                    <button type="submit" class="btn btn-pay">
-                        Thanh toán
-                    </button>
-                </form>
-            </div>
-        </c:if>
+                    <p><strong>Tên gói:</strong> 
+                        ${pendingOrder.packageId.name}
+                    </p>
 
+                    <p><strong>Giá:</strong> 
+                        ${pendingOrder.packageId.price} VND
+                    </p>
 
-        <!-- ========================= -->
-        <!-- TRƯỜNG HỢP 3: CÓ ORDER ACTIVE -->
-        <!-- ========================= -->
-        <c:if test="${activeOrder != null}">
-            <div class="box success" style="padding:25px">
+                    <form action="payments" method="get">
+                        <input type="hidden" name="action" value="checkout"/>
+                        <input type="hidden" name="orderId" 
+                               value="${pendingOrder.orderId}"/>
+                        <button class="btn">Thanh toán ngay</button>
+                    </form>
+                </div>
+                <a href="${pageContext.request.contextPath}/home">
+                    <button>Về trang chủ</button>
+                </a>
+            </c:when>
 
-                <h3 style="margin-bottom:15px; color:#2e7d32;">
-                    ✔ Gói dịch vụ đang hoạt động
-                </h3>
+            <%-- CASE 3: Không có order nào --%>
+            <c:otherwise>
+                <div class="card">
+                    <h3>Bạn chưa đăng ký dịch vụ</h3>
+                    <a href="${pageContext.request.contextPath}/OrderServlet">
+                        <button class="btn">Đăng ký ngay</button>
+                    </a>
+                </div>
+                <a href="${pageContext.request.contextPath}/home">
+                    <button>Về trang chủ</button>
+                </a>
+            </c:otherwise>
 
-                <table style="width:100%; border-collapse:collapse;">
-                    <tr>
-                        <td style="padding:8px; font-weight:bold;">Tên gói:</td>
-                        <td style="padding:8px;">
-                            ${activeOrder.packageId.packageName}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:8px; font-weight:bold;">Nhà cung cấp:</td>
-                        <td style="padding:8px;">
-                            ${activeOrder.packageId.providerId.providerName}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:8px; font-weight:bold;">Giá gói:</td>
-                        <td style="padding:8px;">
-                            ${activeOrder.packageId.price} VND
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:8px; font-weight:bold;">Ngày đăng ký:</td>
-                        <td style="padding:8px;">
-                            ${activeOrder.orderDate}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="padding:8px; font-weight:bold;">Trạng thái:</td>
-                        <td style="padding:8px; color:#2e7d32; font-weight:bold;">
-                            Đang hoạt động
-                        </td>
-                    </tr>
-                </table>
-
-                <hr style="margin:20px 0">
-
-                <p style="font-size:13px; color:#555;">
-                    Gói dịch vụ của bạn hiện đang được kích hoạt.
-                    Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi.
-                </p>
-
-            </div>
-        </c:if>
-
-
-        <hr>
-
-        <h3>Chi tiết tài khoản</h3>
-
-        <p><b>Tên:</b> ${user.fullName}</p>
-        <p><b>Email:</b> ${user.email}</p>
+        </c:choose>
 
     </body>
 </html>

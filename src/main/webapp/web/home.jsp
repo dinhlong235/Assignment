@@ -1,160 +1,288 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="model.Users"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>Năng Lượng - Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f0f2f5; display: flex; min-height: 100vh; }
+    <head>
+        <meta charset="UTF-8">
+        <title>VOLTSTREAM Dashboard</title>
 
-        /* 1. SIDEBAR */
-        .sidebar { width: 240px; background-color: #1a5d36; color: white; padding: 25px 0; }
-        .logo { display: flex; align-items: center; padding: 0 25px; margin-bottom: 40px; font-weight: bold; font-size: 20px; gap: 10px; }
-        .nav-menu { list-style: none; }
-        .nav-item { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; opacity: 0.7; transition: 0.3s; }
-        .nav-item.active { background: rgba(255,255,255,0.1); opacity: 1; border-left: 4px solid #fff; }
-        .nav-item:hover { opacity: 1; background: rgba(255,255,255,0.05); }
-
-        /* 2. MAIN CONTENT */
-        .content { flex: 1; padding: 25px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        
-        /* 4 Thẻ KPI */
-        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
-        .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .kpi-title { color: #888; font-size: 13px; margin-bottom: 8px; }
-        .kpi-value { font-size: 22px; font-weight: bold; color: #1a5d36; }
-
-        /* Khu vực Biểu đồ */
-        .chart-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
-        .chart-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-
-        /* Ô Cảnh báo & Gợi ý */
-        .info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .alert-box { background: #fff8ee; border: 1px solid #ffe8cc; padding: 15px; border-radius: 12px; display: flex; gap: 15px; }
-        .tip-box { background: #f0fdf4; border: 1px solid #dcfce7; padding: 15px; border-radius: 12px; display: flex; gap: 15px; }
-    </style>
-</head>
-<body>
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="ti-bolt" style="background: white; color: #1a5d36; padding: 5px; border-radius: 50%;"></i>
-            Năng Lượnga
-        </div>
-        <ul class="nav-menu" style="list-style: none;">
-    <li class="nav-item <%= request.getRequestURI().contains("home.jsp") ? "active" : "" %>">
-        <a href="home.jsp" style="color:inherit; text-decoration:none; display:flex; align-items:center; gap:15px; width:100%;">
-            <i class="ti-layout-grid2"></i> Dashboard
-        </a>
-    </li>
-    
-    <li class="nav-item <%= request.getRequestURI().contains("forecast.jsp") ? "active" : "" %>">
-        <a href="forecast.jsp" style="color:inherit; text-decoration:none; display:flex; align-items:center; gap:15px; width:100%;">
-            <i class="ti-bar-chart"></i> Dự Báo
-        </a>
-    </li>
-    
-    <li class="nav-item"><i class="ti-wallet"></i> Gói Dịch Vụ</li>
-    <li class="nav-item"><i class="ti-settings"></i> Cài Đặt</li>
-</ul>    </aside>
-
-    <main class="content">
-        <%@page import="model.Users"%>
-<%
-    // Lấy đối tượng user từ session
-    Users user = (Users) session.getAttribute("user");
-    String displayName = (user != null) ? user.getName() : "Khách";
-%>
-        <header class="header">
-            <h2>Dashboard</h2>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span>Xin chào, <strong><%= user != null ? user.getName() : "Khách" %></strong></span>
-                <img src="https://ui-avatars.com/api/?name=Dan&background=1a5d36&color=fff" style="width: 35px; border-radius: 50%;">
-            </div>
-        </header>
-
-        <div class="kpi-row">
-            <div class="kpi-card">
-                <div class="kpi-title">Tiêu Thụ Tháng Này</div>
-                <div class="kpi-value">1,250 <small style="font-size: 12px; font-weight: normal;">kWh</small></div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Chi Phí Ước Tính</div>
-                <div class="kpi-value">2,300,000 <small style="font-size: 12px; font-weight: normal;">đ</small></div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Nhiệt Độ Hiện Tại</div>
-                <div class="kpi-value">32°C <i class="ti-sun" style="color: #f59e0b;"></i></div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-title">Giá Điện Hiện Tại</div>
-                <div class="kpi-value">2,500 <small style="font-size: 12px; font-weight: normal;">đ/kWh</small></div>
-            </div>
-        </div>
-
-        <div class="chart-row">
-            <div class="chart-card">
-                <h4 style="margin-bottom: 15px;">Mức Tiêu Thụ Theo Ngày</h4>
-                <canvas id="lineChart" height="150"></canvas>
-            </div>
-            <div class="chart-card">
-                <h4 style="margin-bottom: 15px;">Dự Báo Tháng Tới</h4>
-                <canvas id="barChart" height="230"></canvas>
-            </div>
-        </div>
-
-        <div class="info-row">
-            <div class="alert-box">
-                <i class="ti-alert" style="color: #f59e0b; font-size: 20px;"></i>
-                <div>
-                    <strong style="display: block; margin-bottom: 5px;">Cảnh Báo Bất Thường</strong>
-                    <p style="font-size: 13px; color: #666;">Tiêu thụ tối qua tăng đột biến 150%! Kiểm tra lại các thiết bị.</p>
-                </div>
-            </div>
-            <div class="tip-box">
-                <i class="ti-light-bulb" style="color: #22c55e; font-size: 20px;"></i>
-                <div>
-                    <strong style="display: block; margin-bottom: 5px;">Gợi Ý Tiết Kiệm Điện</strong>
-                    <p style="font-size: 13px; color: #666;">Hãy dùng máy giặt sau 22h để tiết kiệm chi phí điện giờ cao điểm.</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        // Line Chart
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: ['00','04','08','12','16','20','24'],
-                datasets: [{
-                    label: 'kWh',
-                    data: [5, 3, 15, 25, 20, 45, 10],
-                    borderColor: '#1a5d36',
-                    backgroundColor: 'rgba(26, 93, 54, 0.1)',
-                    fill: true, tension: 0.4
-                }]
+        <style>
+            body{
+                margin:0;
+                font-family:Segoe UI, sans-serif;
+                background:#f1f5f9;
             }
-        });
 
-        // Bar Chart
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: ['T1','T2','T3','T4','T5'],
-                datasets: [{
-                    label: 'Dự báo (kWh)',
-                    data: [300, 450, 320, 500, 400],
-                    backgroundColor: '#22c55e',
-                    borderRadius: 5
-                }]
+            .layout{
+                display:flex;
+                height:100vh;
             }
-        });
-    </script>
-</body>
+
+            /* SIDEBAR */
+            .sidebar{
+                width:260px;
+                background:#0f1b2d;
+                color:white;
+                display:flex;
+                flex-direction:column;
+            }
+
+            .logo{
+                padding:20px;
+                font-size:22px;
+                font-weight:bold;
+                color:#38bdf8;
+                border-bottom:1px solid rgba(255,255,255,0.08);
+            }
+
+            .profile{
+                padding:18px;
+                display:flex;
+                align-items:center;
+                gap:12px;
+                cursor:pointer;
+                transition:0.2s;
+                border-bottom:1px solid rgba(255,255,255,0.08);
+            }
+
+            .profile:hover{
+                background:#1e293b;
+            }
+
+            .avatar{
+                width:45px;
+                height:45px;
+                border-radius:50%;
+                background:linear-gradient(135deg,#3b82f6,#2563eb);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:bold;
+                font-size:18px;
+                color:white;
+            }
+
+            .profile-info small{
+                color:#94a3b8;
+            }
+
+            .menu{
+                flex:1;
+                padding:15px;
+            }
+
+            .menu a{
+                display:flex;
+                align-items:center;
+                gap:10px;
+                padding:12px;
+                border-radius:8px;
+                text-decoration:none;
+                color:#cbd5e1;
+                margin-bottom:6px;
+                transition:0.2s;
+            }
+
+            .menu a:hover{
+                background:#1e293b;
+                color:white;
+            }
+
+            .menu a.active{
+                background:linear-gradient(90deg,#2563eb,#3b82f6);
+                color:white;
+            }
+
+            .logout{
+                padding:15px;
+                border-top:1px solid rgba(255,255,255,0.08);
+            }
+
+            .logout a{
+                text-decoration:none;
+                color:#cbd5e1;
+            }
+
+            /* MAIN */
+            .main{
+                flex:1;
+                padding:40px;
+            }
+
+            .big-title{
+                font-size:28px;
+                font-weight:bold;
+                margin-bottom:5px;
+            }
+
+            .subtitle{
+                color:#64748b;
+                margin-bottom:30px;
+            }
+
+            /* GRID */
+            .services{
+                display:grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap:20px;
+            }
+
+            .card{
+                background:white;
+                padding:25px;
+                border-radius:14px;
+                box-shadow:0 6px 18px rgba(0,0,0,0.05);
+                transition:0.25s;
+            }
+
+            .card:hover{
+                transform:translateY(-6px);
+                box-shadow:0 12px 24px rgba(0,0,0,0.08);
+            }
+
+            .card h5{
+                margin:0 0 10px 0;
+                font-size:18px;
+            }
+
+            .card p{
+                color:#64748b;
+                font-size:14px;
+                margin-bottom:20px;
+            }
+
+            .btn{
+                padding:8px 16px;
+                border:none;
+                border-radius:6px;
+                cursor:pointer;
+                font-weight:500;
+            }
+
+            .btn-blue{
+                background:#2563eb;
+                color:white;
+            }
+
+            .btn-green{
+                background:#16a34a;
+                color:white;
+            }
+
+            .btn-orange{
+                background:#ea580c;
+                color:white;
+            }
+
+            .btn:hover{
+                opacity:0.9;
+            }
+
+            .alert-success{
+                background:#dcfce7;
+                color:#166534;
+                padding:12px;
+                border-radius:8px;
+                margin-bottom:20px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <%
+            Users user = (Users) session.getAttribute("user");
+            if (user == null) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
+            String successMessage = (String) session.getAttribute("successMessage");
+        %>
+
+        <div class="layout">
+
+            <!-- SIDEBAR -->
+            <div class="sidebar">
+
+                <div class="logo">
+                    ⚡ VOLTSTREAM
+                </div>
+
+                <a href="${pageContext.request.contextPath}/account" style="text-decoration:none; color:inherit;">
+                    <div class="profile">
+                        <div class="avatar">
+                            <%= user.getName().substring(0, 1).toUpperCase()%>
+                        </div>
+                        <div class="profile-info">
+                            <div><%= user.getName()%></div>
+                            <small>Power Manager</small>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="menu">
+                    <a class="active" href="${pageContext.request.contextPath}/home">🏠 Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/OrderServlet">📄 Đăng kí dịch vụ</a>
+                    <a href="${pageContext.request.contextPath}/OrderServlet">💰 Ước tính điện năng</a>
+                    <a href="#">🧾 Updating</a>
+                    <a href="#">📊 Updating</a>
+                    <a href="#">🔔 Updating</a>
+                </div>
+
+                <div class="logout">
+                    <a href="${pageContext.request.contextPath}/logout">⬅ Logout</a>
+                </div>
+
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="main">
+
+                <div class="big-title">DASHBOARD</div>
+                <div class="subtitle">
+                    Welcome back, <%= user.getName()%> 👋
+                </div>
+
+                <% if (successMessage != null) {%>
+                <div class="alert-success">
+                    <%= successMessage%>
+                </div>
+                <%
+                        session.removeAttribute("successMessage");
+                    }
+                %>
+
+                <h3 style="margin-bottom:20px;">🔥 Gói dịch vụ nổi bật</h3>
+
+                <div class="services">
+
+                    <div class="card">
+                        <h5>Basic Plan</h5>
+                        <p>Phù hợp hộ gia đình nhỏ</p>
+                        <button class="btn btn-blue">Xem chi tiết</button>
+                    </div>
+
+                    <div class="card">
+                        <h5>Premium Plan</h5>
+                        <p>Tiết kiệm điện tối ưu</p>
+                        <button class="btn btn-green">Xem chi tiết</button>
+                    </div>
+
+                    <div class="card">
+                        <h5>Enterprise Plan</h5>
+                        <p>Dành cho doanh nghiệp</p>
+                        <button class="btn btn-orange">Xem chi tiết</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
 </html>
