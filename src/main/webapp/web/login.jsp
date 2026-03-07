@@ -125,6 +125,19 @@
     <div class="card">
 
         <h2>Sign in to your account</h2>
+        <%-- Hiển thị lỗi (Màu đỏ) --%>
+                <% if(request.getAttribute("error") != null) { %>
+            <div style="color: #dc2626; background: #fee2e2; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 14px;">
+                <%= request.getAttribute("error") %>
+            </div>
+        <% } %>
+
+        <%-- Hiển thị thành công (Màu xanh) --%>
+                <% if(request.getAttribute("message") != null) { %>
+            <div style="color: #16a34a; background: #dcfce7; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-size: 14px;">
+                <%= request.getAttribute("message") %>
+            </div>
+        <% } %>
 
         <form action="${pageContext.request.contextPath}/login" method="post">
 
@@ -134,23 +147,19 @@
             </div>
 
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
-            </div>
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
 
-            <button type="submit" class="btn-login">
-                Login
-            </button>
-
-        </form>
-
-        <div class="register">
-            Don't have an account?
-            <a href="${pageContext.request.contextPath}/web/register.jsp">
-                Register here
+        <div style="text-align: right; margin-top: -10px; margin-bottom: 20px;">
+            <a href="${pageContext.request.contextPath}/web/forgot-password.jsp" style="font-size: 13px; color: #3b82f6; text-decoration: none; font-weight: 500;">
+                Forgot password?
             </a>
         </div>
 
+        <button type="submit" class="btn-login">
+            Login
+        </button>
     </div>
 
     <div class="footer">

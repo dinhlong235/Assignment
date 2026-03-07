@@ -227,7 +227,7 @@
                 <div class="menu">
                     <a class="active" href="${pageContext.request.contextPath}/home">🏠 Dashboard</a>
                     <a href="${pageContext.request.contextPath}/OrderServlet">📄 Đăng kí dịch vụ</a>
-                    <a href="${pageContext.request.contextPath}/OrderServlet">💰 Ước tính điện năng</a>
+                    <a href="${pageContext.request.contextPath}/web/oders/TinhTien.jsp">💰 Ước tính điện năng</a>
                     <a href="#">🧾 Updating</a>
                     <a href="#">📊 Updating</a>
                     <a href="#">🔔 Updating</a>
